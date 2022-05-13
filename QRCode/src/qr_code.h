@@ -16,6 +16,7 @@ class QRCode
 {
 private:
 	cv::Mat m_code;
+	cv::Mat m_locator;
 	int m_size;
 
 public:

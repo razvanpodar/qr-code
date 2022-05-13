@@ -313,8 +313,9 @@ void Gui::DrawCode()
     if (!m_qrcode.IsEmpty())
     {
         cv::Mat code;
-        code = m_qrcode.GetCode();
+        //code = m_qrcode.GetCode();
 
+        cv::flip(m_qrcode.GetCode(), code, 0);
         cv::resize(code, code, cv::Size(height, height), 0, 0, cv::INTER_NEAREST);
 
         //std::cout << int(code.at<uchar>(0, 0)) << std::endl;
