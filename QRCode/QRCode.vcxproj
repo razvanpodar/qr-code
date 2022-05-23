@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\galois_field.cpp" />
     <ClCompile Include="src\gui.cpp" />
     <ClCompile Include="src\lib_test.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="src\vendor\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\galois_field.h" />
     <ClInclude Include="src\gui.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\qr_code.h" />

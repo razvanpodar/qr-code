@@ -209,7 +209,6 @@ void QRCode::GenerateStandardCode(int version)
 
 				m_align.copyTo(roi_marker);
 				std::cout << "Done" << std::endl;
-
 			}
 		}
 	}
