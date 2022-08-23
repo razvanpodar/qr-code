@@ -1,14 +1,9 @@
 #pragma once
 
-#include <string>
-#include <iostream>
-#include <sstream>
 #include <map>
 #include <vector>
 
 #include "opencv2/core.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
 constexpr int M1_SIZE = 11;

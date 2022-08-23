@@ -89,10 +89,9 @@ GaloisField::GetPrimePolynomials(int generator, int exponent,
             correct_primes.push_back(prime_candidates[i]);
             if (single)
             {
-                return std::vector<std::vector<int>> {prime_candidates[i]};
+                //return std::vector<std::vector<int>> {prime_candidates[i]};
             }
         }
-
     }
 
     // return correct_primes;
@@ -125,7 +124,7 @@ inline int GaloisField::Multiply(int x, int y)
 inline int GaloisField::Divide(int x, int y)
 {
     if (y == 0)
-        return;
+        return 0;
     if (x == 0)
         return 0;
     int idx = (m_log[x] + FIELD_CHAR - m_log[y]) % FIELD_CHAR;

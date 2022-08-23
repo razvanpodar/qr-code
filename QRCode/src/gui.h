@@ -1,16 +1,11 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <array>
-
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
-#include "vendor/imgui/imgui.h"
-#include "vendor/imgui/imgui_impl_glfw.h"
-#include "vendor/imgui/imgui_impl_opengl3.h"
 
 #include "qr_code.h"
+#include "renderer.h"
+#include "shader.h"
 
 constexpr int SP_WIDTH = 300;
 constexpr int W_HEIGHT = 720;
@@ -20,7 +15,8 @@ class Gui
 {
 private:
 	GLFWwindow* m_window;
-
+	Renderer m_renderer;
+	Shader m_shader;
 	QRCode m_qrcode;
 
 	float f = 0.5f;
@@ -32,6 +28,10 @@ public:
 	~Gui();
 
 	void Draw();
-	void DrawCode();
+	void DrawQRCode();
+	void DrawGeneratorPane();
+	void DrawScannerPane();
+	void SetImGuiStyle();
+
 	bool WindowShouldClose();
 };

@@ -1,5 +1,13 @@
 #include "qr_code.h"
 
+#include <string>
+#include <iostream>
+#include <sstream>
+
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgcodecs.hpp"
+
+
 QRCode::QRCode()
 {
 	// Empty
@@ -254,8 +262,6 @@ void QRCode::GenerateStandardCode(int version)
 	//std::cout << "code: (" << m_code.rows << "," 
 	//	<< m_code.cols << ")" << std::endl;
 	////std::cout << m_code << std::endl;
-
-
 
 	// Create buffer area
 	cv::copyMakeBorder(m_code, m_code, 4, 4, 4, 4, cv::BORDER_CONSTANT, 255);

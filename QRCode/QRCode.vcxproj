@@ -150,6 +150,9 @@
     <ClCompile Include="src\lib_test.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\qr_code.cpp" />
+    <ClCompile Include="src\reed_solomon.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui_demo.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui_draw.cpp" />
@@ -163,6 +166,9 @@
     <ClInclude Include="src\gui.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\qr_code.h" />
+    <ClInclude Include="src\reed_solomon.h" />
+    <ClInclude Include="src\renderer.h" />
+    <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\vendor\imgui\imconfig.h" />
     <ClInclude Include="src\vendor\imgui\imgui.h" />
     <ClInclude Include="src\vendor\imgui\imgui_impl_glfw.h" />
