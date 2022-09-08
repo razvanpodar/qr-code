@@ -6,7 +6,7 @@ class Shader
 {
 public:
     Shader();
-    Shader(const char* vertex_path, const char* fragment_path);
+    void CompileShaders(const char* vertex_path, const char* fragment_path);
     ~Shader();
 
     unsigned int GetShaderProgram()
@@ -18,7 +18,7 @@ public:
     void Delete();
 
 private:
-    unsigned int m_shader_program;
+    unsigned int m_shader_program = 0;
 
     const std::string ParseShader(const char* shader_path);
 };

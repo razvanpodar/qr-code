@@ -23,6 +23,8 @@ private:
 	int v = 1;
 	int counter = 0;
 
+	void Setup();
+
 public:
 	Gui();
 	~Gui();

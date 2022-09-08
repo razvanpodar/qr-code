@@ -3,11 +3,13 @@
 #include <iostream>
 #include <array>
 #include <string>
+#include <fstream>
 
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 
+#include "opencv2/highgui.hpp"
 
 Gui::Gui()
 {
@@ -42,7 +44,9 @@ Gui::Gui()
 
     m_qrcode = QRCode();
     m_renderer = Renderer();
-    m_shader = Shader("res/shaders/shader.vs", "res/shaders/shader.fs");
+    m_shader = Shader();
+
+    Setup();
 }
 
 Gui::~Gui()
@@ -52,6 +56,24 @@ Gui::~Gui()
     ImGui::DestroyContext();
 
     glfwTerminate();
+}
+
+void Gui::Setup()
+{
+    std::vector<float> vertices = {
+        -1.0f,  1.0f, 0.0f,  0.0f,  1.0f,
+        -1.0f, -1.0f, 0.0f,  0.0f,  0.0f,
+         1.0f, -1.0f, 0.0f,  1.0f,  0.0f,
+         1.0f,  1.0f, 0.0f,  1.0f,  1.0f
+    };
+
+    std::vector<unsigned int> indices = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    m_renderer.BindBuffers(vertices, indices);
+    m_shader.CompileShaders("res/shaders/shader.vs", "res/shaders/shader.fs");
 }
 
 void Gui::Draw()
@@ -82,27 +104,8 @@ void Gui::Draw()
 
 void Gui::DrawQRCode()
 {
-    // Compute square (QR Code image) location
-    float x_deviation = float(SP_WIDTH) / W_WIDTH;
-
-    float percentage = 1.0f;
-    int height = W_HEIGHT * percentage;
-    float x = float(height * 100) / W_WIDTH;
-    x /= 100;
-
-    std::vector<float> vertices = {
-        x + x_deviation, percentage, 0.0f, x + x_deviation, percentage,
-        x + x_deviation, -percentage, 0.0f, x + x_deviation, 0.0f,
-       -x + x_deviation, -percentage, 0.0f, 0.0f, 0.0f,
-       -x + x_deviation, percentage, 0.0f, 0.0f, percentage
-    };
-
-    std::vector<unsigned int> indices = {
-        0, 1, 3,
-        1, 2, 3
-    };
-
-    m_renderer.BindBuffers(vertices, indices);
+    // Change viewport to display the QR code to the right of the UI
+    glViewport(SP_WIDTH, 0, W_WIDTH - SP_WIDTH, W_HEIGHT);
 
     // Map qrcode cv::Mat as a Texture
     GLuint texture_id;
@@ -125,20 +128,27 @@ void Gui::DrawQRCode()
         // OpenCV has a different coordinate system than OpenGL
         // So the image has to be flipped by Y
         cv::flip(m_qrcode.GetCode(), code, 0);
-        cv::resize(code, code, cv::Size(height, height), 0, 0, cv::INTER_NEAREST);
+
+        // Resize code to fit the window for display
+        cv::resize(code, code, cv::Size(W_HEIGHT, W_HEIGHT), 0, 0, cv::INTER_NEAREST);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, code.rows, code.cols, 0,
             GL_LUMINANCE, GL_UNSIGNED_BYTE, code.ptr());
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-    
+
     m_shader.Use();
+
     glUniform1i(glGetUniformLocation(m_shader.GetShaderProgram(), "texture1"), 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_id);
 
     m_renderer.Draw();
+
+    glUseProgram(0);
+
+    glViewport(0, 0, W_WIDTH, W_HEIGHT);
 }
 
 void Gui::DrawGeneratorPane()
