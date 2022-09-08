@@ -1,5 +1,7 @@
 #include "galois_field.h"
 
+#include <algorithm>
+
 GaloisField::GaloisField()
 {
     InitTables();
@@ -115,7 +117,7 @@ inline int GaloisField::Negate(int x)
 
 inline int GaloisField::Multiply(int x, int y)
 {
-    if (x == 0 or y == 0)
+    if (x == 0 || y == 0)
         return 0;
     int idx = (m_log[x] + m_log[y]) % FIELD_CHAR;
     return m_exp[idx];
@@ -124,6 +126,7 @@ inline int GaloisField::Multiply(int x, int y)
 inline int GaloisField::Divide(int x, int y)
 {
     if (y == 0)
+        // Should throw an exception
         return 0;
     if (x == 0)
         return 0;
@@ -154,15 +157,48 @@ std::vector<int> GaloisField::ScalePolynomial(std::vector<int> p, int x)
 
 std::vector<int> GaloisField::AddPolynomials(std::vector<int> p, std::vector<int> q)
 {
-    std::vector<int> r = { 0 };
+    int size = std::max(p.size(), q.size());
+    std::vector<int> r(size, 0);
 
+    for (int i = 0; i < p.size(); i++)
+    {
+        r[i + r.size() - p.size()] = p[i];
+    }
 
-    return std::vector<int>();
+    for (int i = 0; i < q.size(); i++)
+    {
+        r[i + r.size() - q.size()] ^= q[i];
+    }
+
+    return r;
 }
 
 std::vector<int> GaloisField::MultiplyPolynomials(std::vector<int> p, std::vector<int> q)
 {
-    return std::vector<int>();
+    int size = p.size() + q.size() - 1;
+    std::vector<int> r(size, 0);
+
+    std::vector<float> lp(p.size(), 0);
+
+    for (int i = 0; i < p.size(); i++)
+    {
+        lp[i] = m_log[p[i]];
+    }
+
+    for (int i = 0; i < q.size(); i++)
+    {
+        int qi = q[i];
+        if (qi != 0)
+        {
+            int lq = m_log[qi];
+            for (int j = 0; j < p.size(); j++)
+            {
+                r[i + j] ^= m_exp[lp[i] + lq];
+            }
+        }
+    }
+
+    return r;
 }
 
 inline std::vector<int> GaloisField::NegatePolynomial(std::vector<int> p)
@@ -172,7 +208,29 @@ inline std::vector<int> GaloisField::NegatePolynomial(std::vector<int> p)
 
 std::vector<int> GaloisField::DividePolynomials(std::vector<int> p, std::vector<int> q)
 {
-    return std::vector<int>();
+    std::vector<int> message = p;
+
+    int size = p.size() - (q.size() - 1);
+
+    for (int i = 0; i < size; i++)
+    {
+        int coef = message[i];
+
+        if (coef != 0)
+        {
+            for (int j = 0; j < q.size(); j++)
+            {
+                if (q[j] != 0)
+                {
+                    message[i + j] ^= Multiply(q[j], coef);
+                }
+            }
+        }
+    }
+
+    int separator = -(q.size() - 1);
+
+    return message;
 }
 
 int GaloisField::EvaluatePolynomial(std::vector<int> p, int x)
@@ -205,9 +263,3 @@ void GaloisField::InitTables(int generator, int exponent)
         m_exp[i] = m_exp[idx];
     }
 }
-
-
-
-
-
-
